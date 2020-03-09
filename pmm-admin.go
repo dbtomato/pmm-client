@@ -20,7 +20,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/percona/pmm-client/pmm/plugin/oracle"
 	"net"
 	"os"
 	"regexp"
@@ -36,10 +35,10 @@ import (
 	"github.com/percona/pmm-client/pmm/plugin/mysql"
 	mysqlMetrics "github.com/percona/pmm-client/pmm/plugin/mysql/metrics"
 	mysqlQueries "github.com/percona/pmm-client/pmm/plugin/mysql/queries"
+	"github.com/percona/pmm-client/pmm/plugin/oracle"
+	oracleMetrics "github.com/percona/pmm-client/pmm/plugin/oracle/metrics"
 	"github.com/percona/pmm-client/pmm/plugin/postgresql"
 	postgresqlMetrics "github.com/percona/pmm-client/pmm/plugin/postgresql/metrics"
-	//"github.com/percona/pmm-client/pmm/plugin/oracle"
-	oracleMetrics "github.com/percona/pmm-client/pmm/plugin/oracle/metrics"
 	proxysqlMetrics "github.com/percona/pmm-client/pmm/plugin/proxysql/metrics"
 	"github.com/percona/pmm-client/pmm/utils"
 	"github.com/spf13/cobra"
@@ -518,7 +517,7 @@ a new user 'pmm' automatically using the given (auto-detected) ORACLE credential
 [name] is an optional argument, by default it is set to the client name of this PMM client.
 		`,
 		Example: `  pmm-admin add oracle --password abc123 --sid
-  pmm-admin add oracle --password abc123 --port 1521 --sid svdp  instance1521`,
+  					pmm-admin add oracle --password abc123 --port 1521 --sid svdp  instance1521`,
 		Run: func(cmd *cobra.Command, args []string) {
 			// Passing additional arguments doesn't make sense because this command enables multiple exporters.
 			if len(admin.Args) > 0 {
@@ -551,6 +550,34 @@ a new user 'pmm' automatically using the given (auto-detected) ORACLE credential
 			} else {
 				fmt.Println("[oracle:metrics] OK, now monitoring oracle metrics using DSN", utils.SanitizeDSN(info.DSN))
 			}
+		},
+	}
+
+	cmdAddOracleMetrics = &cobra.Command{
+		Use:   "oracle:metrics [flags] [name] [-- [exporter_args]]",
+		Short: "Add PostgreSQL instance to metrics monitoring.",
+		Long: `This command adds the given PostgreSQL instance to metrics monitoring.
+
+When adding a PostgreSQL instance, this tool tries to auto-detect the DSN and credentials.
+If you want to create a new user to be used for metrics collecting, provide --create-user option. pmm-admin will create
+a new user 'pmm' automatically using the given (auto-detected) PostgreSQL credentials for granting purpose.
+
+[name] is an optional argument, by default it is set to the client name of this PMM client.
+[exporter_args] are the command line options to be passed directly to Prometheus Exporter.
+		`,
+		Example: `  pmm-admin add oracle:metrics --password abc123
+  pmm-admin add oracle:metrics --password abc123 --create-user
+  pmm-admin add oracle:metrics --password abc123 --port 3307 instance3307
+  pmm-admin add oracle:metrics --user rdsuser --password abc123 --host my-rds.1234567890.us-east-1.rds.amazonaws.com my-rds
+  pmm-admin add oracle:metrics -- --extend.query-path /path/to/queries.yaml`,
+		Run: func(cmd *cobra.Command, args []string) {
+			oracleMetrics := oracleMetrics.New(flagOracle)
+			info, err := admin.AddMetrics(ctx, oracleMetrics, false, flagDisableSSL)
+			if err != nil {
+				fmt.Println("Error adding oracle metrics:", err)
+				os.Exit(1)
+			}
+			fmt.Println("OK, now monitoring oracle metrics using DSN", utils.SanitizeDSN(info.DSN))
 		},
 	}
 
