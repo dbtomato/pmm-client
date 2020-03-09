@@ -1666,7 +1666,7 @@ func main() {
 		cmd.Flags().StringVar(&flagOracle.Host, "host", "", "oracle host")
 		cmd.Flags().StringVar(&flagOracle.Port, "port", "", "oracle port")
 		cmd.Flags().StringVar(&flagOracle.User, "user", "", "oracle username")
-		cmd.Flags().StringVar(&flagOracle.User, "sid", "", "oracle sid")
+		cmd.Flags().StringVar(&flagOracle.Sid, "sid", "", "oracle sid")
 		cmd.Flags().StringVar(&flagOracle.Password, "password", "", "oracle password")
 		cmd.Flags().StringVar(&flagOracle.SSLMode, "sslmode", "disable", "oracle SSL Mode: disable, require, verify-full or verify-ca")
 		cmd.Flags().BoolVar(&flagOracle.CreateUser, "create-user", false, "create a new oracle user")
