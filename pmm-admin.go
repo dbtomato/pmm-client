@@ -1441,6 +1441,7 @@ despite PMM server is alive or not.
 )
 
 func main() {
+	fmt.Println("hello world")
 	// Commands.
 	cobra.EnableCommandSorting = false
 	rootCmd.AddCommand(
