@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+pmm-admin uninstall
+
+rm -f /usr/sbin/pmm-admin
+rm -rf /usr/local/percona/pmm-client
+rm -rf /usr/local/percona/qan-agent
+
+echo "Uninstall complete."
