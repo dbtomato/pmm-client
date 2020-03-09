@@ -3,31 +3,30 @@ package metrics
 import (
 	"context"
 	"fmt"
-
 	"github.com/percona/pmm-client/pmm/plugin"
-	"github.com/percona/pmm-client/pmm/plugin/postgresql"
+	"github.com/percona/pmm-client/pmm/plugin/oracle"
 	"github.com/percona/pmm-client/pmm/utils"
 )
 
 var _ plugin.Metrics = (*Metrics)(nil)
 
 // New returns *Metrics.
-func New(flags postgresql.Flags) *Metrics {
+func New(flags oracle.Flags) *Metrics {
 	return &Metrics{
-		postgresqlFlags: flags,
+		oracleFlags: flags,
 	}
 }
 
 // Metrics implements plugin.Metrics.
 type Metrics struct {
-	postgresqlFlags postgresql.Flags
+	oracleFlags oracle.Flags
 
 	dsn string
 }
 
 // Init initializes plugin.
 func (m *Metrics) Init(ctx context.Context, pmmUserPassword string) (*plugin.Info, error) {
-	info, err := postgresql.Init(ctx, m.postgresqlFlags, pmmUserPassword)
+	info, err := oracle.Init(ctx, m.oracleFlags, pmmUserPassword)
 	if err != nil {
 		err = fmt.Errorf("%s\n\n"+
 			"It looks like we were unable to connect to your PostgreSQL server.\n"+
@@ -62,7 +61,7 @@ func (m Metrics) Environment() []string {
 
 // Executable is a name of exporter executable under PMMBaseDir.
 func (m Metrics) Executable() string {
-	return "postgres_exporter"
+	return "oracledb_exporter"
 }
 
 // KV is a list of additional Key-Value data stored in consul.

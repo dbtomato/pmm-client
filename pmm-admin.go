@@ -20,6 +20,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/percona/pmm-client/pmm/plugin/oracle"
 	"net"
 	"os"
 	"regexp"
@@ -37,6 +38,8 @@ import (
 	mysqlQueries "github.com/percona/pmm-client/pmm/plugin/mysql/queries"
 	"github.com/percona/pmm-client/pmm/plugin/postgresql"
 	postgresqlMetrics "github.com/percona/pmm-client/pmm/plugin/postgresql/metrics"
+	//"github.com/percona/pmm-client/pmm/plugin/oracle"
+	oracleMetrics "github.com/percona/pmm-client/pmm/plugin/oracle/metrics"
 	proxysqlMetrics "github.com/percona/pmm-client/pmm/plugin/proxysql/metrics"
 	"github.com/percona/pmm-client/pmm/utils"
 	"github.com/spf13/cobra"
@@ -471,6 +474,7 @@ a new user 'pmm' automatically using the given (auto-detected) PostgreSQL creden
 			}
 		},
 	}
+
 	cmdAddPostgreSQLMetrics = &cobra.Command{
 		Use:   "postgresql:metrics [flags] [name] [-- [exporter_args]]",
 		Short: "Add PostgreSQL instance to metrics monitoring.",
@@ -498,6 +502,61 @@ a new user 'pmm' automatically using the given (auto-detected) PostgreSQL creden
 			fmt.Println("OK, now monitoring PostgreSQL metrics using DSN", utils.SanitizeDSN(info.DSN))
 		},
 	}
+
+	////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////
+	cmdAddOracle = &cobra.Command{
+		Use:   "oracle [flags] [name]",
+		Short: "Add complete monitoring for ORACLE instance (linux and oracle metrics).",
+		Long: `This command adds the given ORACLE instance to system and metrics monitoring.
+
+When adding a ORACLE instance, this tool tries to auto-detect the DSN and credentials.
+If you want to create a new user to be used for metrics collecting, provide --create-user option. pmm-admin will create
+a new user 'pmm' automatically using the given (auto-detected) ORACLE credentials for granting purpose.
+
+[name] is an optional argument, by default it is set to the client name of this PMM client.
+		`,
+		Example: `  pmm-admin add oracle --password abc123 --sid
+  pmm-admin add oracle --password abc123 --port 1521 --sid svdp  instance1521`,
+		Run: func(cmd *cobra.Command, args []string) {
+			// Passing additional arguments doesn't make sense because this command enables multiple exporters.
+			if len(admin.Args) > 0 {
+				fmt.Printf("We can't determine which exporter should receive additional flags: %s.\n", strings.Join(admin.Args, ", "))
+				fmt.Println("To pass additional arguments to specific exporter you need to add it separately e.g.:")
+				fmt.Println("pmm-admin add linux:metrics -- ", strings.Join(admin.Args, " "))
+				fmt.Println("or")
+				fmt.Println("pmm-admin add oracle:metrics -- ", strings.Join(admin.Args, " "))
+				os.Exit(1)
+			}
+
+			linuxMetrics := linuxMetrics.New()
+			_, err := admin.AddMetrics(ctx, linuxMetrics, flagForce, flagDisableSSL)
+			if err == pmm.ErrDuplicate {
+				fmt.Println("[linux:metrics] OK, already monitoring this system.")
+			} else if err != nil {
+				fmt.Println("[linux:metrics] Error adding linux metrics:", err)
+				os.Exit(1)
+			} else {
+				fmt.Println("[linux:metrics] OK, now monitoring this system.")
+			}
+
+			oracleMetrics := oracleMetrics.New(flagOracle)
+			info, err := admin.AddMetrics(ctx, oracleMetrics, false, flagDisableSSL)
+			if err == pmm.ErrDuplicate {
+				fmt.Println("[oracle:metrics] OK, already monitoring oracle metrics.")
+			} else if err != nil {
+				fmt.Println("[oracle:metrics] Error adding oracle metrics:", err)
+				os.Exit(1)
+			} else {
+				fmt.Println("[oracle:metrics] OK, now monitoring oracle metrics using DSN", utils.SanitizeDSN(info.DSN))
+			}
+		},
+	}
+
+	////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////
 
 	cmdAddMongoDB = &cobra.Command{
 		Use:   "mongodb [flags] [name]",
@@ -1438,6 +1497,7 @@ despite PMM server is alive or not.
 	flagMySQLQueries mysqlQueries.Flags
 	flagC            pmm.Config
 	flagTimeout      time.Duration
+	flagOracle       oracle.Flags
 )
 
 func main() {
@@ -1472,6 +1532,7 @@ func main() {
 		cmdAddMongoDBQueries,
 		cmdAddPostgreSQL,
 		cmdAddPostgreSQLMetrics,
+		cmdAddOracle,
 		cmdAddProxySQL,
 		cmdAddProxySQLMetrics,
 		cmdAddExternalService,
@@ -1570,6 +1631,28 @@ func main() {
 		cmd.Flags().BoolVar(&flagPostgreSQL.Force, "force", false, "force to create/update PostgreSQL user")
 		cmd.Flags().BoolVar(&flagDisableSSL, "disable-ssl", false, "disable ssl mode on exporter")
 	}
+
+	//////////////////////////////////////////////
+	//////////////////////////////////////////////
+	//////////////////////////////////////////////
+	addCommonOracleFlags := func(cmd *cobra.Command) {
+		cmd.Flags().StringVar(&flagOracle.Host, "host", "", "oracle host")
+		cmd.Flags().StringVar(&flagOracle.Port, "port", "", "oracle port")
+		cmd.Flags().StringVar(&flagOracle.User, "user", "", "oracle username")
+		cmd.Flags().StringVar(&flagOracle.User, "sid", "", "oracle sid")
+		cmd.Flags().StringVar(&flagOracle.Password, "password", "", "oracle password")
+		cmd.Flags().StringVar(&flagOracle.SSLMode, "sslmode", "disable", "oracle SSL Mode: disable, require, verify-full or verify-ca")
+		cmd.Flags().BoolVar(&flagOracle.CreateUser, "create-user", false, "create a new oracle user")
+		cmd.Flags().StringVar(&flagOracle.CreateUserPassword, "create-user-password", "", "optional password for a new PostgreSQL user")
+		cmd.Flags().BoolVar(&flagOracle.Force, "force", false, "force to create/update oracle user")
+		cmd.Flags().BoolVar(&flagDisableSSL, "disable-ssl", false, "disable ssl mode on exporter")
+	}
+
+	addCommonOracleFlags(cmdAddOracle)
+	//////////////////////////////////////////////
+	//////////////////////////////////////////////
+	//////////////////////////////////////////////
+
 	// pmm-admin add postgresql
 	addCommonPostgreSQLFlags(cmdAddPostgreSQL)
 	// pmm-admin add postgresql:metrics
