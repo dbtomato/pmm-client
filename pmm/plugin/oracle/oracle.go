@@ -108,6 +108,7 @@ func Init(ctx context.Context, flags Flags, pmmUserPassword string) (*plugin.Inf
 	}
 
 	// At this point access is required.
+	fmt.Println(userDSN.String())
 	if !accessOK {
 		err := fmt.Errorf("Cannot connect to Oracle:%s\n\n%s\n%s", errs,
 			"Verify that Oracle user exists and has the correct privileges.",
@@ -116,7 +117,7 @@ func Init(ctx context.Context, flags Flags, pmmUserPassword string) (*plugin.Inf
 	}
 
 	// Get PostgreSQL connection.
-	fmt.Println(userDSN.String())
+
 	db, err := sql.Open("oci8", userDSN.String())
 	if err != nil {
 		return nil, err
@@ -332,7 +333,7 @@ func Init(ctx context.Context, flags Flags, pmmUserPassword string) (*plugin.Inf
 //}
 
 func testConnection(ctx context.Context, dsn string) error {
-	db, err := sql.Open("postgres", dsn)
+	db, err := sql.Open("oci8", dsn)
 	if err != nil {
 		return err
 	}
