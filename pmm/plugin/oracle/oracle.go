@@ -98,7 +98,7 @@ func Init(ctx context.Context, flags Flags, pmmUserPassword string) (*plugin.Inf
 			accessOK = true
 		}
 	}
-
+	fmt.Println(userDSN.String())
 	// If the above fails, test PostgreSQL access simply using detected credentials.
 	if !accessOK {
 		if err := testConnection(ctx, userDSN.String()); err != nil {
@@ -109,7 +109,7 @@ func Init(ctx context.Context, flags Flags, pmmUserPassword string) (*plugin.Inf
 	}
 
 	// At this point access is required.
-	fmt.Println(userDSN.String())
+
 	if !accessOK {
 		err := fmt.Errorf("Cannot connect to Oracle:%s\n\n%s\n%s", errs,
 			"Verify that Oracle user exists and has the correct privileges.",
