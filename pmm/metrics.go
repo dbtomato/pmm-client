@@ -117,6 +117,7 @@ func (a *Admin) AddMetrics(ctx context.Context, m plugin.Metrics, force bool, di
 
 	env := []string{
 		"ORACLE_HOME=/opt/app/oracle/product/11.2.0/db_1",
+		"LD_LIBRARY_PATH=/opt/app/oracle/product/11.2.0/db_1/lib",
 	}
 
 	if !disableSSL {
