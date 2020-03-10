@@ -29,7 +29,7 @@ func (m *Metrics) Init(ctx context.Context, pmmUserPassword string) (*plugin.Inf
 	info, err := oracle.Init(ctx, m.oracleFlags, pmmUserPassword)
 	if err != nil {
 		err = fmt.Errorf("%s\n\n"+
-			"It looks like we were unable to connect to your PostgreSQL server.\n"+
+			"It looks like we were unable to connect to your ORACLE server.\n"+
 			"Please see the PMM FAQ for additional troubleshooting steps: https://www.percona.com/doc/percona-monitoring-and-management/faq.html", err)
 		return nil, err
 	}
@@ -39,7 +39,7 @@ func (m *Metrics) Init(ctx context.Context, pmmUserPassword string) (*plugin.Inf
 
 // Name of the exporter.
 func (m Metrics) Name() string {
-	return "postgresql"
+	return "oracledb"
 }
 
 // DefaultPort returns default port.

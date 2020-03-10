@@ -1670,7 +1670,7 @@ func main() {
 		cmd.Flags().StringVar(&flagOracle.Password, "password", "", "oracle password")
 		cmd.Flags().StringVar(&flagOracle.SSLMode, "sslmode", "disable", "oracle SSL Mode: disable, require, verify-full or verify-ca")
 		cmd.Flags().BoolVar(&flagOracle.CreateUser, "create-user", false, "create a new oracle user")
-		cmd.Flags().StringVar(&flagOracle.CreateUserPassword, "create-user-password", "", "optional password for a new PostgreSQL user")
+		cmd.Flags().StringVar(&flagOracle.CreateUserPassword, "create-user-password", "", "optional password for a new oracle user")
 		cmd.Flags().BoolVar(&flagOracle.Force, "force", false, "force to create/update oracle user")
 		cmd.Flags().BoolVar(&flagDisableSSL, "disable-ssl", false, "disable ssl mode on exporter")
 	}
