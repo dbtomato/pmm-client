@@ -144,6 +144,7 @@ func (a *Admin) AddMetrics(ctx context.Context, m plugin.Metrics, force bool, di
 		Executable:  filepath.Join(PMMBaseDir, executable),
 		Arguments:   args,
 	}
+	fmt.Println(filepath.Join(PMMBaseDir, executable))
 	svcConfig.Environment = append(svcConfig.Environment, m.Environment()...)
 	if err := installService(svcConfig); err != nil {
 		return nil, err
