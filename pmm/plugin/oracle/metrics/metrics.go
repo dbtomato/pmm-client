@@ -59,6 +59,8 @@ func (Metrics) Args() []string {
 // Environment is a list of additional environment variables passed to exporter executable.
 func (m Metrics) Environment() []string {
 	return []string{
+		"ORACLE_HOME=/opt/app/oracle/product/11.2.0/db_1",
+		"LD_LIBRARY_PATH=/opt/app/oracle/product/11.2.0/db_1/lib",
 		fmt.Sprintf("DATA_SOURCE_NAME=%s", m.dsn),
 	}
 }

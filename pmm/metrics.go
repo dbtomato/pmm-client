@@ -115,11 +115,6 @@ func (a *Admin) AddMetrics(ctx context.Context, m plugin.Metrics, force bool, di
 		fmt.Sprintf("-web.auth-file=%s", ConfigFile),
 	}
 
-	env := []string{
-		"ORACLE_HOME=/opt/app/oracle/product/11.2.0/db_1",
-		"LD_LIBRARY_PATH=/opt/app/oracle/product/11.2.0/db_1/lib",
-	}
-
 	if !disableSSL {
 		// Check and generate certificate if needed.
 		if err := a.checkSSLCertificate(); err != nil {
@@ -147,7 +142,6 @@ func (a *Admin) AddMetrics(ctx context.Context, m plugin.Metrics, force bool, di
 		DisplayName: fmt.Sprintf("PMM Prometheus %s on port %d", m.Executable(), port),
 		Description: fmt.Sprintf("PMM Prometheus %s on port %d", m.Executable(), port),
 		Executable:  filepath.Join(PMMBaseDir, executable),
-		Environment: env,
 		Arguments:   args,
 	}
 	fmt.Println(filepath.Join(PMMBaseDir, executable))
