@@ -1142,7 +1142,7 @@ An optional list of instances (scrape targets) can be provided.
 				fmt.Printf("[linux:metrics] OK, removed system %s from monitoring.\n", admin.ServiceName)
 			}
 
-			err = admin.RemoveMetrics("oracledb")
+			err = admin.RemoveMetrics("oracle")
 			if err == pmm.ErrNoService {
 				fmt.Printf("[oracle:metrics] OK, no oracle metrics %s under monitoring.\n", admin.ServiceName)
 			} else if err != nil {
