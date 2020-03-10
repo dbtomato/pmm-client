@@ -120,10 +120,9 @@ func (a *Admin) AddMetrics(ctx context.Context, m plugin.Metrics, force bool, di
 		if err := a.checkSSLCertificate(); err != nil {
 			return nil, err
 		}
-		args = append(args,
-			fmt.Sprintf("-web.ssl-key-file=%s", SSLKeyFile),
-			fmt.Sprintf("-web.ssl-cert-file=%s", SSLCertFile),
-		)
+		args = append(args)//fmt.Sprintf("-web.ssl-key-file=%s", SSLKeyFile),
+		//fmt.Sprintf("-web.ssl-cert-file=%s", SSLCertFile),
+
 	}
 
 	// Add additional args passed by plugin.
