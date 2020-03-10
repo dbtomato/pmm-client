@@ -112,7 +112,7 @@ func (a *Admin) AddMetrics(ctx context.Context, m plugin.Metrics, force bool, di
 
 	args := []string{
 		fmt.Sprintf("-web.listen-address=%s:%d", a.Config.BindAddress, port),
-		fmt.Sprintf("-web.auth-file=%s", ConfigFile),
+		//fmt.Sprintf("-web.auth-file=%s", ConfigFile),
 	}
 
 	if !disableSSL {
