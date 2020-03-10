@@ -39,17 +39,21 @@ func (m *Metrics) Init(ctx context.Context, pmmUserPassword string) (*plugin.Inf
 
 // Name of the exporter.
 func (m Metrics) Name() string {
-	return "oracledb"
+	return "oracle"
 }
 
 // DefaultPort returns default port.
 func (m Metrics) DefaultPort() int {
-	return 42005
+	return 9161
 }
 
 // Args is a list of additional arguments passed to exporter executable.
 func (Metrics) Args() []string {
-	return nil
+	var defaultArgs = []string{
+		"-log.level=error",
+		"-default.metrics=/usr/local/percona/pmm-client/default-metrics.toml",
+	}
+	return defaultArgs
 }
 
 // Environment is a list of additional environment variables passed to exporter executable.

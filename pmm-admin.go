@@ -1121,6 +1121,58 @@ An optional list of instances (scrape targets) can be provided.
 			fmt.Printf("OK, removed PostgreSQL metrics %s from monitoring.\n", admin.ServiceName)
 		},
 	}
+
+	//////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////
+	cmdRemoveOracle = &cobra.Command{
+		Use:   "oracle [flags] [name]",
+		Short: "Remove all monitoring for ORACLE instance (linux and oracle metrics).",
+		Long: `This command removes all monitoring for ORACLE instance (linux and ORACLE metrics).
+
+[name] is an optional argument, by default it is set to the client name of this PMM client.
+		`,
+		Run: func(cmd *cobra.Command, args []string) {
+			err := admin.RemoveMetrics("linux")
+			if err == pmm.ErrNoService {
+				fmt.Printf("[linux:metrics] OK, no system %s under monitoring.\n", admin.ServiceName)
+			} else if err != nil {
+				fmt.Printf("[linux:metrics] Error removing linux metrics %s: %s\n", admin.ServiceName, err)
+			} else {
+				fmt.Printf("[linux:metrics] OK, removed system %s from monitoring.\n", admin.ServiceName)
+			}
+
+			err = admin.RemoveMetrics("oracle")
+			if err == pmm.ErrNoService {
+				fmt.Printf("[oracle:metrics] OK, no oracle metrics %s under monitoring.\n", admin.ServiceName)
+			} else if err != nil {
+				fmt.Printf("[oracle:metrics] Error removing oracle metrics %s: %s\n", admin.ServiceName, err)
+			} else {
+				fmt.Printf("[oracle:metrics] OK, removed MySQL PostgreSQL %s from monitoring.\n", admin.ServiceName)
+			}
+		},
+	}
+
+	cmdRemoveOracleMetrics = &cobra.Command{
+		Use:   "oracle:metrics [flags] [name]",
+		Short: "Remove oracle instance from metrics monitoring.",
+		Long: `This command removes oracle instance from metrics monitoring.
+
+[name] is an optional argument, by default it is set to the client name of this PMM client.
+		`,
+		Run: func(cmd *cobra.Command, args []string) {
+			if err := admin.RemoveMetrics("oracle"); err != nil {
+				fmt.Printf("Error removing ORACLE metrics %s: %s\n", admin.ServiceName, err)
+				os.Exit(1)
+			}
+			fmt.Printf("OK, removed oracle metrics %s from monitoring.\n", admin.ServiceName)
+		},
+	}
+
+	//////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////
+
 	cmdRemoveProxySQLMetrics = &cobra.Command{
 		Use:   "proxysql:metrics [flags] [name]",
 		Short: "Remove ProxySQL instance from metrics monitoring.",
@@ -1560,6 +1612,7 @@ func main() {
 		cmdAddPostgreSQL,
 		cmdAddPostgreSQLMetrics,
 		cmdAddOracle,
+		cmdAddOracleMetrics,
 		cmdAddProxySQL,
 		cmdAddProxySQLMetrics,
 		cmdAddExternalService,
@@ -1576,6 +1629,8 @@ func main() {
 		cmdRemoveMongoDBQueries,
 		cmdRemovePostgreSQL,
 		cmdRemovePostgreSQLMetrics,
+		cmdRemoveOracle,
+		cmdRemoveOracleMetrics,
 		cmdRemoveProxySQLMetrics,
 		cmdRemoveExternalService,
 		cmdRemoveExternalMetrics,
@@ -1676,6 +1731,7 @@ func main() {
 	}
 
 	addCommonOracleFlags(cmdAddOracle)
+	addCommonOracleFlags(cmdAddOracleMetrics)
 	//////////////////////////////////////////////
 	//////////////////////////////////////////////
 	//////////////////////////////////////////////
