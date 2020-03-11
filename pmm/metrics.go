@@ -111,8 +111,8 @@ func (a *Admin) AddMetrics(ctx context.Context, m plugin.Metrics, force bool, di
 	}
 
 	args := []string{
-		fmt.Sprintf("-web.listen-address=%s:%d", a.Config.BindAddress, port),
-		fmt.Sprintf("-web.auth-file=%s", ConfigFile),
+		fmt.Sprintf("--web.listen-address=%s:%d", a.Config.BindAddress, port),
+		fmt.Sprintf("--web.auth-file=%s", ConfigFile),
 	}
 
 	if !disableSSL {
@@ -121,8 +121,8 @@ func (a *Admin) AddMetrics(ctx context.Context, m plugin.Metrics, force bool, di
 			return nil, err
 		}
 		args = append(args,
-			fmt.Sprintf("-web.ssl-key-file=%s", SSLKeyFile),
-			fmt.Sprintf("-web.ssl-cert-file=%s", SSLCertFile),
+			fmt.Sprintf("--web.ssl-key-file=%s", SSLKeyFile),
+			fmt.Sprintf("--web.ssl-cert-file=%s", SSLCertFile),
 		)
 	}
 
