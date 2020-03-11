@@ -555,8 +555,8 @@ a new user 'pmm' automatically using the given (auto-detected) ORACLE credential
 
 	cmdAddOracleMetrics = &cobra.Command{
 		Use:   "oracle:metrics [flags] [name] [-- [exporter_args]]",
-		Short: "Add PostgreSQL instance to metrics monitoring.",
-		Long: `This command adds the given PostgreSQL instance to metrics monitoring.
+		Short: "Add oracle instance to metrics monitoring.",
+		Long: `This command adds the given oracle instance to metrics monitoring.
 
 When adding a PostgreSQL instance, this tool tries to auto-detect the DSN and credentials.
 If you want to create a new user to be used for metrics collecting, provide --create-user option. pmm-admin will create

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	_ "github.com/mattn/go-oci8"
 	"log"
+	"os"
 )
 
 func query() {
@@ -54,6 +55,9 @@ func update() {
 }
 
 func main() {
+	ORACLE_HOME := os.Getenv("OCI_HOME")
+	LD_LIBRARY_PATH := os.Getenv("DYLD_LIBRARY_PATH")
+	fmt.Println(ORACLE_HOME, LD_LIBRARY_PATH)
 	fmt.Println("开始执行查询")
 	query()
 	fmt.Println("结束执行查询")

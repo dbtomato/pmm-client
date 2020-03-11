@@ -6,6 +6,7 @@ import (
 	"github.com/percona/pmm-client/pmm/plugin"
 	"github.com/percona/pmm-client/pmm/plugin/oracle"
 	"github.com/percona/pmm-client/pmm/utils"
+	"os"
 )
 
 var _ plugin.Metrics = (*Metrics)(nil)
@@ -55,9 +56,11 @@ func (Metrics) Args() []string {
 // Environment is a list of additional environment variables passed to exporter executable.
 func (m Metrics) Environment() []string {
 	fmt.Print("oracle env success")
+	ORACLE_HOME := os.Getenv("ORACLE_HOME")
+	LD_LIBRARY_PATH := os.Getenv("LD_LIBRARY_PATH")
 	return []string{
-		"ORACLE_HOME=/opt/app/oracle/product/11.2.0/db_1",
-		"LD_LIBRARY_PATH=/opt/app/oracle/product/11.2.0/db_1/lib",
+		"ORACLE_HOME=" + ORACLE_HOME,
+		"LD_LIBRARY_PATH=" + LD_LIBRARY_PATH,
 		fmt.Sprintf("DATA_SOURCE_NAME=%s", m.dsn),
 	}
 }
