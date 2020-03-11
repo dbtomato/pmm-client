@@ -49,11 +49,7 @@ func (m Metrics) DefaultPort() int {
 
 // Args is a list of additional arguments passed to exporter executable.
 func (Metrics) Args() []string {
-	var defaultArgs = []string{
-		"-log.level=error",
-		"-default.metrics=/usr/local/percona/pmm-client/default-metrics.toml",
-	}
-	return defaultArgs
+	return nil
 }
 
 // Environment is a list of additional environment variables passed to exporter executable.
