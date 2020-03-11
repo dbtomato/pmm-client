@@ -55,8 +55,8 @@ func update() {
 }
 
 func main() {
-	ORACLE_HOME := os.Getenv("OCI_HOME")
-	LD_LIBRARY_PATH := os.Getenv("DYLD_LIBRARY_PATH")
+	ORACLE_HOME := os.Getenv("ORACLE_HOME")
+	LD_LIBRARY_PATH := os.Getenv("LD_LIBRARY_PATH")
 	fmt.Println(ORACLE_HOME, LD_LIBRARY_PATH)
 	fmt.Println("开始执行查询")
 	query()
