@@ -858,6 +858,7 @@ var svcTypes = []string{
 	"mysql:queries",
 	"mongodb:metrics",
 	"mongodb:queries",
+	"oracle:metrics",
 	"proxysql:metrics",
 	"postgresql:metrics",
 }
